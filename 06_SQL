@@ -1,0 +1,549 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "b8778d36-5c23-4885-969e-490a0ec07569",
+   "metadata": {},
+   "source": [
+    "# Sprint 1 - SQL Fundamentals\n",
+    "\n",
+    "## Module 6: SQL\n",
+    "\n",
+    "### Day 1: Database Design + Basic Queries\n",
+    "\n",
+    "Today I started learning SQL by understanding how data is organized in a\n",
+    "relational database and how SQL queries are used to retrieve and analyze data.\n",
+    "\n",
+    "### Topics Covered\n",
+    "\n",
+    "- Database and tables\n",
+    "- Primary key\n",
+    "- Foreign key\n",
+    "- Relationships\n",
+    "- Constraints\n",
+    "- SELECT\n",
+    "- WHERE\n",
+    "- ORDER BY\n",
+    "- DISTINCT\n",
+    "- LIMIT\n",
+    "- GROUP BY\n",
+    "- HAVING\n",
+    "\n",
+    "### My Understanding\n",
+    "\n",
+    "I learned that SQL is used to work with data stored in databases. I can use SQL to create tables and retrieve, filter, sort and group data."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "dadb3538-7007-4e74-9ba4-17c349a1e51f",
+   "metadata": {},
+   "source": [
+    "## 1. Database Design\n",
+    "\n",
+    "### Understand\n",
+    "\n",
+    "A database is an organized collection of data.\n",
+    "\n",
+    "A relational database stores data in tables. A table contains rows and\n",
+    "columns, where each row represents a record and each column represents\n",
+    "a particular attribute.\n",
+    "\n",
+    "### Demonstration\n",
+    "\n",
+    "For an employee management system, I can create an `Employees` table with\n",
+    "columns such as employee ID, name, department, salary and city.\n",
+    "\n",
+    "This demonstrates database design because related employee information is\n",
+    "organized into one structured table.\n",
+    "\n",
+    "### My Understanding\n",
+    "\n",
+    "I understand database design as organizing data into suitable tables and columns so that the data is easier to manage and retrieve."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "520f6ec3-c868-406a-a8b0-2da20408b5f1",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Database connected successfully.\n"
+     ]
+    }
+   ],
+   "source": [
+    "import sqlite3\n",
+    "\n",
+    "connection = sqlite3.connect(\"company.db\")\n",
+    "cursor = connection.cursor()\n",
+    "\n",
+    "print(\"Database connected successfully.\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6522e000-08f6-4a72-8ba4-d00ea9c48691",
+   "metadata": {},
+   "source": [
+    "## 2. Tables, Primary Key and Constraints\n",
+    "\n",
+    "### Understand\n",
+    "\n",
+    "A table stores related information using rows and columns.\n",
+    "\n",
+    "A primary key uniquely identifies each row in a table.\n",
+    "\n",
+    "Constraints are rules that control the data stored in a table.\n",
+    "\n",
+    "Common constraints include:\n",
+    "\n",
+    "- `PRIMARY KEY` - uniquely identifies a record\n",
+    "- `NOT NULL` - prevents a required value from being empty\n",
+    "- `UNIQUE` - prevents duplicate values\n",
+    "- `DEFAULT` - provides a default value\n",
+    "\n",
+    "### Demonstration\n",
+    "\n",
+    "In my employee table, `employee_id` is the primary key because every employee\n",
+    "should have a unique ID.\n",
+    "\n",
+    "The `name` column uses `NOT NULL` because an employee should have a name.\n",
+    "\n",
+    "### My Understanding\n",
+    "\n",
+    "I understand a primary key as a unique identifier for each record. Constraints\n",
+    "help maintain the quality and consistency of the data."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "199bee6b-b607-42fd-a7a5-fcae64eb5018",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Employees table created successfully.\n"
+     ]
+    }
+   ],
+   "source": [
+    "cursor.execute(\"\"\"\n",
+    "CREATE TABLE IF NOT EXISTS Employees (\n",
+    "    employee_id INTEGER PRIMARY KEY,\n",
+    "    name TEXT NOT NULL,\n",
+    "    department TEXT,\n",
+    "    salary REAL,\n",
+    "    city TEXT\n",
+    ")\n",
+    "\"\"\")\n",
+    "\n",
+    "connection.commit()\n",
+    "\n",
+    "print(\"Employees table created successfully.\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5e79fb3e-a01f-428b-b733-c8d67446e25e",
+   "metadata": {},
+   "source": [
+    "## 3. Inserting Data\n",
+    "\n",
+    "### Understand\n",
+    "\n",
+    "The `INSERT INTO` statement is used to add records to a table.\n",
+    "\n",
+    "### Demonstration\n",
+    "\n",
+    "I will insert sample employee records into the `Employees` table. These records\n",
+    "will be used to practice the SQL queries in the next sections.\n",
+    "\n",
+    "### My Understanding\n",
+    "\n",
+    "I understand `INSERT INTO` as the SQL command used to add new records to a\n",
+    "table."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "c54bca90-4a29-4b7b-899c-4a340154ad00",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Employee records inserted successfully.\n"
+     ]
+    }
+   ],
+   "source": [
+    "employees = [\n",
+    "    (1, \"Chetan\", \"Testing\", 50000, \"Kalaburagi\"),\n",
+    "    (2, \"Asha\", \"Development\", 60000, \"Pune\"),\n",
+    "    (3, \"Rahul\", \"Testing\", 55000, \"Bengaluru\"),\n",
+    "    (4, \"Priya\", \"HR\", 45000, \"Hyderabad\"),\n",
+    "    (5, \"Arun\", \"Development\", 65000, \"Pune\")\n",
+    "]\n",
+    "\n",
+    "cursor.executemany(\"\"\"\n",
+    "INSERT INTO Employees\n",
+    "(employee_id, name, department, salary, city)\n",
+    "VALUES (?, ?, ?, ?, ?)\n",
+    "\"\"\", employees)\n",
+    "\n",
+    "connection.commit()\n",
+    "\n",
+    "print(\"Employee records inserted successfully.\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e414794a-20d0-4f57-9e54-4ad791d9408c",
+   "metadata": {},
+   "source": [
+    "## 4. SELECT\n",
+    "\n",
+    "### Understand\n",
+    "\n",
+    "`SELECT` is used to retrieve data from a table.\n",
+    "\n",
+    "`SELECT *` means that I want to retrieve all columns.\n",
+    "\n",
+    "### Demonstration\n",
+    "\n",
+    "I will use `SELECT` to display all employee records from the `Employees` table.\n",
+    "\n",
+    "### My Understanding\n",
+    "\n",
+    "I learned that SELECT is used when I want to get data from a table."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "5588b84e-9e6a-41d1-9fc6-c99d1002ceed",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(1, 'Chetan', 'Testing', 50000.0, 'Kalaburagi')\n",
+      "(2, 'Asha', 'Development', 60000.0, 'Pune')\n",
+      "(3, 'Rahul', 'Testing', 55000.0, 'Bengaluru')\n",
+      "(4, 'Priya', 'HR', 45000.0, 'Hyderabad')\n",
+      "(5, 'Arun', 'Development', 65000.0, 'Pune')\n"
+     ]
+    }
+   ],
+   "source": [
+    "cursor.execute(\"SELECT * FROM Employees\")\n",
+    "\n",
+    "for employee in cursor.fetchall():\n",
+    "    print(employee)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "01db0366-2ac2-4f4f-9d2c-cd37643fbd3f",
+   "metadata": {},
+   "source": [
+    "## 5. WHERE\n",
+    "\n",
+    "### Understand\n",
+    "\n",
+    "The `WHERE` clause is used to filter rows based on a condition.\n",
+    "\n",
+    "### Demonstration\n",
+    "\n",
+    "I can use `WHERE` to retrieve only employees who belong to the Testing\n",
+    "department.\n",
+    "\n",
+    "### My Understanding\n",
+    "\n",
+    "I learned that WHERE helps me filter the rows and get only the records that match my condition."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "92735a5f-dd96-4c85-9379-a686ecf80966",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "('Chetan', 'Testing', 50000.0)\n",
+      "('Rahul', 'Testing', 55000.0)\n"
+     ]
+    }
+   ],
+   "source": [
+    "cursor.execute(\"\"\"\n",
+    "SELECT name, department, salary\n",
+    "FROM Employees\n",
+    "WHERE department = 'Testing'\n",
+    "\"\"\")\n",
+    "\n",
+    "for employee in cursor.fetchall():\n",
+    "    print(employee)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3461a3f8-46f6-484f-b7f0-243e2e86c6ef",
+   "metadata": {},
+   "source": [
+    "## 6. ORDER BY\n",
+    "\n",
+    "### Understand\n",
+    "\n",
+    "`ORDER BY` is used to sort the result of a query.\n",
+    "\n",
+    "`ASC` sorts in ascending order and `DESC` sorts in descending order.\n",
+    "\n",
+    "### Demonstration\n",
+    "\n",
+    "I will sort employees according to their salary from highest to lowest.\n",
+    "\n",
+    "### My Understanding\n",
+    "\n",
+    "I learned that ORDER BY is used to arrange the query results, such as sorting salary from highest to lowest."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "5fbf1a3f-8cdf-480a-b144-f93cd8db4984",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "('Arun', 65000.0)\n",
+      "('Asha', 60000.0)\n",
+      "('Rahul', 55000.0)\n",
+      "('Chetan', 50000.0)\n",
+      "('Priya', 45000.0)\n"
+     ]
+    }
+   ],
+   "source": [
+    "cursor.execute(\"\"\"\n",
+    "SELECT name, salary\n",
+    "FROM Employees\n",
+    "ORDER BY salary DESC\n",
+    "\"\"\")\n",
+    "\n",
+    "for employee in cursor.fetchall():\n",
+    "    print(employee)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c5dc956e-3564-4442-90d9-8e2e7f51f985",
+   "metadata": {},
+   "source": [
+    "## 7. DISTINCT and LIMIT\n",
+    "\n",
+    "### DISTINCT\n",
+    "\n",
+    "`DISTINCT` removes duplicate values from the result.\n",
+    "\n",
+    "For example, more than one employee can belong to the same city. `DISTINCT`\n",
+    "allows me to display each city only once.\n",
+    "\n",
+    "### LIMIT\n",
+    "\n",
+    "`LIMIT` restricts the number of rows returned by a query.\n",
+    "\n",
+    "### My Understanding\n",
+    "\n",
+    "I understand `DISTINCT` as a way to remove duplicate results and `LIMIT` as\n",
+    "a way to control how many records are returned."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "6b1c0844-72e7-4104-b14f-8c9c85d87418",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Unique cities:\n",
+      "Kalaburagi\n",
+      "Pune\n",
+      "Bengaluru\n",
+      "Hyderabad\n",
+      "\n",
+      "First 3 employees:\n",
+      "(1, 'Chetan', 'Testing', 50000.0, 'Kalaburagi')\n",
+      "(2, 'Asha', 'Development', 60000.0, 'Pune')\n",
+      "(3, 'Rahul', 'Testing', 55000.0, 'Bengaluru')\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"Unique cities:\")\n",
+    "\n",
+    "cursor.execute(\"\"\"\n",
+    "SELECT DISTINCT city\n",
+    "FROM Employees\n",
+    "\"\"\")\n",
+    "\n",
+    "for city in cursor.fetchall():\n",
+    "    print(city[0])\n",
+    "\n",
+    "print(\"\\nFirst 3 employees:\")\n",
+    "\n",
+    "cursor.execute(\"\"\"\n",
+    "SELECT *\n",
+    "FROM Employees\n",
+    "LIMIT 3\n",
+    "\"\"\")\n",
+    "\n",
+    "for employee in cursor.fetchall():\n",
+    "    print(employee)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4dcd3db7-1ec9-4644-a13f-0f42d965967b",
+   "metadata": {},
+   "source": [
+    "## 8. GROUP BY and HAVING\n",
+    "\n",
+    "### GROUP BY\n",
+    "\n",
+    "`GROUP BY` groups rows that have the same value.\n",
+    "\n",
+    "For example, I can group employees by department and count the employees\n",
+    "in each department.\n",
+    "\n",
+    "### HAVING\n",
+    "\n",
+    "`HAVING` filters grouped results.\n",
+    "\n",
+    "### Demonstration\n",
+    "\n",
+    "I will group employees by department and then display only departments that\n",
+    "have more than one employee.\n",
+    "\n",
+    "### My Understanding\n",
+    "\n",
+    "I learned that GROUP BY creates groups based on a column, such as department. HAVING can then filter those groups based on a condition."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "504d6af4-8a78-4db7-9665-4c1066aed43d",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "('Development', 2)\n",
+      "('Testing', 2)\n"
+     ]
+    }
+   ],
+   "source": [
+    "cursor.execute(\"\"\"\n",
+    "SELECT department, COUNT(*) AS employee_count\n",
+    "FROM Employees\n",
+    "GROUP BY department\n",
+    "HAVING COUNT(*) > 1\n",
+    "\"\"\")\n",
+    "\n",
+    "for result in cursor.fetchall():\n",
+    "    print(result)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ff1d80e8-56e8-4fae-b97a-292108743e1b",
+   "metadata": {},
+   "source": [
+    "# Day 1 Summary\n",
+    "\n",
+    "Today I learned the fundamentals of relational database design and basic SQL\n",
+    "queries.\n",
+    "\n",
+    "### What I Practiced\n",
+    "\n",
+    "1. Understanding databases and tables.\n",
+    "2. Understanding primary keys.\n",
+    "3. Understanding constraints.\n",
+    "4. Creating a table using SQL.\n",
+    "5. Inserting records using `INSERT INTO`.\n",
+    "6. Retrieving data using `SELECT`.\n",
+    "7. Filtering records using `WHERE`.\n",
+    "8. Sorting results using `ORDER BY`.\n",
+    "9. Removing duplicate results using `DISTINCT`.\n",
+    "10. Limiting results using `LIMIT`.\n",
+    "11. Grouping records using `GROUP BY`.\n",
+    "12. Filtering groups using `HAVING`.\n",
+    "\n",
+    "### Important Difference I Learned\n",
+    "\n",
+    "`WHERE` filters individual rows, while `HAVING` filters groups created using\n",
+    "`GROUP BY`.\n",
+    "\n",
+    "### Learning Outcome\n",
+    "\n",
+    "I now understand how data can be organized in a relational database and how\n",
+    "basic SQL queries can be used to retrieve, filter, sort and group that data.\n",
+    "\n",
+    "### Next Step\n",
+    "\n",
+    "Next I will learn SQL joins and then continue with advanced SQL concepts."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "427944dc-ba8c-4a97-8781-b893e2da4f2f",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
